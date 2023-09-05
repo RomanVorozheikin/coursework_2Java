@@ -4,8 +4,8 @@ import com.example.coursework2.domain.Question;
 import com.example.coursework2.exceptions.MoreThanInServiceException;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class ExaminerServiceImpl implements ExaminerService {
@@ -17,12 +17,16 @@ public class ExaminerServiceImpl implements ExaminerService {
 
     @Override
     public Set<String> getQuestions(int amount) throws MoreThanInServiceException {
-        Set<String> questions = questionService.getAll().stream()
-                .map(Question::getQuestion)
-                .limit(amount)
-                .collect(Collectors.toSet());
-        if (questions.size() < amount) {
+        if (questionService.getAll().size() < amount) {
             throw new MoreThanInServiceException();
+        }
+        Set<String> questions = new HashSet<>();
+        for (int i = 1; i <= amount; i++) {
+            Question question = questionService.getRandomQuestion();
+            if (questions.contains(question.getQuestion())) {
+                amount++;
+            }
+            questions.add(question.getQuestion());
         }
         return questions;
     }

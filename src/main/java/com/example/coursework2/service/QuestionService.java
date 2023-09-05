@@ -7,8 +7,6 @@ import java.util.List;
 public interface QuestionService {
     String add(String question, String answer);
     List<Question> getAll();
-
     String remove(String question, String answer);
-
     Question getRandomQuestion();
 }

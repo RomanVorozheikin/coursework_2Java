@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -37,21 +38,30 @@ class ExaminerServiceImplTest {
     }
     @Test
     void testGetQuestions() throws MoreThanInServiceException {
+        int amount = 3;
 
         when(questionService.getAll()).thenReturn(questions);
-        int amount = 2;
+        Set<String> expected = new HashSet<>(List.of(
+                "Столица России",
+                "Столица Белорусии",
+                "Столица Франции"
+        ));
+        when(questionService.getRandomQuestion()).thenReturn(new Question("Столица России", "Москва"),
+                new Question("Столица Белорусии", "Минск"),
+                new Question("Столица Франции", "Париж"));
 
         Set<String> actual = examinerService.getQuestions(amount);
 
+        assertEquals(expected, actual);
         assertEquals(amount, actual.size());
         verify(questionService).getAll();
     }
 
     @Test
     void testGetQuestionException() {
-        when(questionService.getAll()).thenReturn(questions);
 
         int amount = 4;
+        when(questionService.getAll()).thenReturn(questions);
 
         assertThrows(MoreThanInServiceException.class, () -> examinerService.getQuestions(amount));
         verify(questionService).getAll();
