@@ -1,51 +1,46 @@
 package com.example.coursework2.service;
 import com.example.coursework2.domain.Question;
+import com.example.coursework2.repository.JavaQuestionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class JavaQuestionServiceImpl implements QuestionService {
-    private final List<Question> questions;
+    private final JavaQuestionRepository javaQuestionRepository;
 
-    public JavaQuestionServiceImpl() {
-        this.questions = new ArrayList<>();
+    @Autowired
+    public JavaQuestionServiceImpl(JavaQuestionRepository javaQuestionRepository) {
+        this.javaQuestionRepository = javaQuestionRepository;
+    }
+
+    @Override
+    public String add(String question, String answer) {
+        return javaQuestionRepository.add(question, answer);
+    }
+    @PostConstruct
+    public void init() {
+        javaQuestionRepository.add("Символьный тип переменной", "char");
+        javaQuestionRepository.add("С какого индекса начинается нумерация массива?", "С нуля");
+        javaQuestionRepository.add("Ключевое слово для создания объекта", "new");
     }
 
     @Override
     public List<Question> getAll() {
-        return questions;
+        return javaQuestionRepository.getAll();
     }
 
-
-    @Override
-    public String add(String question, String answer) {
-        Question q = new Question(question, answer);
-        Set<String> setQuestion = questions.stream()
-                .map(Question::getQuestion)
-                .collect(Collectors.toSet());
-        if (setQuestion.contains(question)) {
-            return "Такой вопрос уже есть";
-        }
-        questions.add(q);
-        return "Вопрос добавлен";
-    }
 
     @Override
     public String remove(String question, String answer) {
-        Question q = new Question(question, answer);
-        if (questions.contains(q)) {
-            questions.remove(q);
-            return "Вопрос удален!";
-        }
-        return "Вопрос не найден!";
+        return javaQuestionRepository.remove(question, answer);
     }
 
     @Override
     public Question getRandomQuestion() {
-        Random random = new Random();
-        return questions.get(random.nextInt(questions.size()));
+        return javaQuestionRepository.getRandomQuestion();
     }
 }
 

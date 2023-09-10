@@ -1,32 +1,37 @@
 package com.example.coursework2.service;
 
-import com.example.coursework2.domain.Question;
 import com.example.coursework2.exceptions.MoreThanInServiceException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class ExaminerServiceImpl implements ExaminerService {
-    private final QuestionService questionService;
+    private final QuestionService mathQuestionService;
+    private final QuestionService javaQuestionService;
 
-    public ExaminerServiceImpl(QuestionService questionService) {
-        this.questionService = questionService;
+
+    @Autowired
+    public ExaminerServiceImpl(@Qualifier("mathQuestionServiceImpl") QuestionService mathQuestionService,
+                               @Qualifier("javaQuestionServiceImpl") QuestionService javaQuestionService) {
+        this.mathQuestionService = mathQuestionService;
+        this.javaQuestionService = javaQuestionService;
     }
 
     @Override
     public Set<String> getQuestions(int amount) throws MoreThanInServiceException {
-        if (questionService.getAll().size() < amount) {
+        if (amount > mathQuestionService.getAll().size() + javaQuestionService.getAll().size()) {
             throw new MoreThanInServiceException();
         }
         Set<String> questions = new HashSet<>();
-        for (int i = 1; i <= amount; i++) {
-            Question question = questionService.getRandomQuestion();
-            if (questions.contains(question.getQuestion())) {
-                amount++;
+
+        while (questions.size() < amount) {
+            questions.add(javaQuestionService.getRandomQuestion().getQuestion());
+            if (questions.size() < amount) {
+                questions.add(mathQuestionService.getRandomQuestion().getQuestion());
             }
-            questions.add(question.getQuestion());
         }
         return questions;
     }

@@ -2,6 +2,8 @@ package com.example.coursework2.controllers;
 
 import com.example.coursework2.domain.Question;
 import com.example.coursework2.service.QuestionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,8 +13,9 @@ import java.util.List;
 @RequestMapping("/exam/java")
 public class JavaQuestionController {
     private final QuestionService questionService;
-
-    public JavaQuestionController(QuestionService questionService) {
+    @Autowired
+    public JavaQuestionController(
+            @Qualifier("javaQuestionServiceImpl") QuestionService questionService) {
         this.questionService = questionService;
     }
 
