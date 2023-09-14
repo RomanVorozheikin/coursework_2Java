@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("exam/java/math")
+@RequestMapping("exam/math")
 public class MathQuestionController {
     private final QuestionService questionService;
 

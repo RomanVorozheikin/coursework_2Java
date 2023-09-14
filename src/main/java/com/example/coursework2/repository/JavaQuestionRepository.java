@@ -3,6 +3,7 @@ package com.example.coursework2.repository;
 import com.example.coursework2.domain.Question;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -16,6 +17,12 @@ public class JavaQuestionRepository implements QuestionRepository {
         this.questions = questions;
     }
 
+    @PostConstruct
+    public void init() {
+        questions.add(new Question("Символьный тип переменной", "char"));
+        questions.add(new Question("С какого индекса начинается нумерация массива?", "С нуля"));
+        questions.add(new Question("Ключевое слово для создания объекта", "new"));
+    }
     @Override
     public String add(String question, String answer) {
         Question q = new Question(question, answer);

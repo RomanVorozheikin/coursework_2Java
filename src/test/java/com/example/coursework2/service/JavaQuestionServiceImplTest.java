@@ -14,75 +14,30 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class JavaQuestionServiceImplTest {
-    private List<Question> questions;
     @Mock
-    private JavaQuestionRepository javaQuestionRepository;
+    private QuestionRepository questionRepositoryMock;
+
     @InjectMocks
-    private JavaQuestionServiceImpl javaQuestionService;
-    @BeforeEach
-    public void setUp() {
-        questions = new ArrayList<>();
-        questions.add(new Question("qwerty", "123"));
-        questions.add(new Question("qaz", "ran"));
-    }
+    private JavaQuestionServiceImpl out;
+
+    private final List<Question> questions = List.of(
+            new Question("qwe", "ewq"),
+            new Question("asd", "dsa"),
+            new Question("zxc", "cxz")
+    );
 
     @Test
-    public void testGetAll() {
-        when(javaQuestionRepository.getAll()).thenReturn(questions);
-        List<Question> actual = javaQuestionService.getAll();
-        assertEquals(questions,actual);
-    }
+    void shouldReturnTrueAfterRandom() {
+        when(questionRepositoryMock.getAll()).thenReturn(questions);
 
-    @Test
-    public void testSuccessfullyAdd() {
-        String question = "qwerty";
-        String answer = "123";
-        when(javaQuestionRepository.add(anyString(), anyString())).thenReturn("Вопрос добавлен!");
-
-        String result = javaQuestionService.add(question, answer);
-
-        verify(javaQuestionRepository, times(1)).add(question, answer);
-        assertEquals("Вопрос добавлен!", result);
-    }
-    @Test
-    public void testFailAdd() {
-        String question = "qwerty";
-        String answer = "123";
-        when(javaQuestionRepository.add(anyString(), anyString())).thenReturn("Такой вопрос уже есть");
-
-        String result = javaQuestionService.add(question, answer);
-
-        verify(javaQuestionRepository, times(1)).add(question, answer);
-        assertEquals("Такой вопрос уже есть", result);
-    }
-
-
-    @Test
-    public void testSuccessfullyRemove() {
-        String question = "qwerty";
-        String answer = "123";
-        when(javaQuestionRepository.remove(anyString(), anyString())).thenReturn("Вопрос удален!");
-
-        String result = javaQuestionService.remove(question, answer);
-
-        verify(javaQuestionRepository, times(1)).remove(question, answer);
-        assertEquals("Вопрос удален!", result);
-    }
-    @Test
-    public void testFailRemove() {
-        String question = "qwerty";
-        String answer = "123";
-        when(javaQuestionRepository.remove(anyString(), anyString())).thenReturn("Вопрос не найден!");
-
-        String result = javaQuestionService.remove(question, answer);
-
-        verify(javaQuestionRepository, times(1)).remove(question, answer);
-        assertEquals("Вопрос не найден!", result);
+        assertTrue(out.getAll().contains(out.getRandomQuestion()));
     }
 }

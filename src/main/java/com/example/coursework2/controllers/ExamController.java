@@ -13,7 +13,6 @@ import java.util.Set;
 public class ExamController {
     private final ExaminerService examinerService;
 
-    @Autowired
     public ExamController(ExaminerService examinerService) {
         this.examinerService = examinerService;
     }

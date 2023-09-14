@@ -9,28 +9,27 @@ import java.util.*;
 
 @Service
 public class ExaminerServiceImpl implements ExaminerService {
-    private final QuestionService mathQuestionService;
-    private final QuestionService javaQuestionService;
 
+    private final List<QuestionService> questionServices;
 
     @Autowired
-    public ExaminerServiceImpl(@Qualifier("mathQuestionServiceImpl") QuestionService mathQuestionService,
-                               @Qualifier("javaQuestionServiceImpl") QuestionService javaQuestionService) {
-        this.mathQuestionService = mathQuestionService;
-        this.javaQuestionService = javaQuestionService;
+    public ExaminerServiceImpl(@Qualifier("javaQuestionServiceImpl")QuestionService javaQuestionService,
+                               @Qualifier("mathQuestionServiceImpl")QuestionService mathQuestionService) {
+        questionServices = new ArrayList<>();
+        questionServices.add(javaQuestionService);
+        questionServices.add(mathQuestionService);
     }
 
     @Override
     public Set<String> getQuestions(int amount) throws MoreThanInServiceException {
-        if (amount > mathQuestionService.getAll().size() + javaQuestionService.getAll().size()) {
+        if (amount > questionServices.get(0).getAll().size()*2) {
             throw new MoreThanInServiceException();
         }
         Set<String> questions = new HashSet<>();
-
         while (questions.size() < amount) {
-            questions.add(javaQuestionService.getRandomQuestion().getQuestion());
+            questions.add(questionServices.get(0).getRandomQuestion().getQuestion());
             if (questions.size() < amount) {
-                questions.add(mathQuestionService.getRandomQuestion().getQuestion());
+                questions.add(questionServices.get(1).getRandomQuestion().getQuestion());
             }
         }
         return questions;
